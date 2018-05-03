@@ -13,3 +13,29 @@
 	<string.h>
 	<time.h>
 
+1525376754 source:c:\tp_2\main.c
+	<stdio.h>
+	<stdlib.h>
+	"funciones.h"
+	"utn.h"
+
+1525378505 c:\tp_2\funciones.h
+
+1525376754 source:c:\tp_2\funciones.c
+	"funciones.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"utn.h"
+
+1525378799 c:\tp_2\utn.h
+
+1525376754 source:c:\tp_2\utn.c
+	"funciones.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"utn.h"
+

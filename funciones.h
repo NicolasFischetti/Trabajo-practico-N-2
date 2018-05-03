@@ -6,7 +6,7 @@ typedef struct {
     char nombre[50];
     int edad;
     int estado;
-    int dni;
+    char dni[20];
 
 }EPersona;
 
@@ -24,23 +24,46 @@ int obtenerEspacioLibre(EPersona lista[]);
  * @param dni el dni a ser buscado en el array.
  * @return el indice en donde se encuentra el elemento que coincide con el parametro dni
  */
-int buscarPorDni(EPersona lista[], long long dni);
+int buscarPorDni(EPersona lista[], int dni);
 
+/** \brief Inicializa el array de abonado
+ * \param Lista el array se pasa por parametro
+ * \return 0 en el caso que el lugar este libre.
+ */
 int abonado_init(EPersona* lista);
+
+/** \brief Pide los datos para dar de alta a la persona, pide nombre, edad y dni
+ * \param Lista el array se pasa por parametro
+ * \return El nombre, edad y dni de la persona ingresada.
+ */
 int persona_alta(EPersona* lista);
-int persona_eliminar(EPersona* lista, long long dni);
+
+/** \brief Da de baja a la persona
+ * \param  lista el array que pasa por parametro
+ * \param dni el dni a ser buscado en el array
+ * \return 0  da de baja la posicion 1a que se encontraba la persona
+ */
+int persona_eliminar(EPersona* lista, int dni);
+
+/** \brief Ordena a las personas por nombre
+ * \param lista el array que pasa por el parametro
+ * \param 0 para ordenar de menor a mayor, 1 para ordenar de mayor a menor
+ * \return Orden de los nombres de las personas
+ */
 int persona_ordenar(EPersona* lista, int orden);
+
+/** \brief Muestra los datos de las personas (nombre, edad, estado, dni)
+ * \param lista el array que pasa por el parametro
+ * \return nombre, edad, estado , dni de las personas
+ */
+
 int personas_mostrar(EPersona* lista);
 
+/** \brief Muestra grafico de las personas menores a 18 años, entre 19-35 y los mayores a 35.
+ * \param lista el arrray que pasa por el parametro
+ * \return Cantidad de personas menores a 18 años, entre 19-35 y mayores a 35.
+ */
 
-int getValidDni(char requestMessage[],char errorMessage[], char errorMessageLenght[],char input[], int attemps);
-int getValidString(char requestMessage[],char errorMessage[], char errorMessageLenght[],char input[], int maxLenght,int attemps);
-int getValidInt(char requestMessage[],char errorMessage[], int* input,int lowLimit, int hiLimit,int attemps);
-int getStringNumeros(char mensaje[],char input[]);
-void getString(char mensaje[],char input[]);
-int getStringLetras(char mensaje[],char input[]);
-
-int esSoloLetras(char str[]);
-int esNumerico(char str[]);
+int persona_grafico(EPersona* lista);
 
 

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "utn.h"
 
 int abonado_init(EPersona* lista)
 {
@@ -39,7 +40,7 @@ int obtenerEspacioLibre(EPersona lista[])
     return retorno;
 }
 
-int buscarPorDni(EPersona lista[], long long dni)
+int buscarPorDni(EPersona lista[], int dni)
 {
     int retorno = -1;
     int i;
@@ -62,7 +63,7 @@ int persona_alta(EPersona* lista)
 {
     int retorno = -1;
     char nombre[50];
-    int dni;
+    char dni[20];
     int edad;
     int indice;
 
@@ -77,11 +78,11 @@ int persona_alta(EPersona* lista)
             {
                 if(!getValidInt("\nIngrese su edad\n","\nError ingrese la edad nuevamente\n",&edad,0,100,2))
                 {
-                    if(!getValidInt("\nIngrese su dni\n","\nError ingrese su dni nuevamente\n",&dni,0, 1000000, 2))
+                    if(!getValidDni("\nIngrese su dni\n","\nError ingrese su dni nuevamente\n", "error muy largo el dni",dni, 2))
                     {
                         retorno = 0;
                         strcpy(lista[indice].nombre,nombre);
-                        lista[indice].dni = dni;
+                        strcpy(lista[indice].dni,dni);
                         lista[indice].edad = edad;
                         lista[indice].estado = 1;
                     }
@@ -92,7 +93,7 @@ int persona_alta(EPersona* lista)
     return retorno;
 }
 
-int persona_eliminar(EPersona* lista, long long dni)
+int persona_eliminar(EPersona* lista, int dni)
 {
 
     int retorno = -1;
@@ -111,7 +112,7 @@ int persona_ordenar(EPersona* lista, int orden)
     int retorno = -1;
     int flagSwap;
     int i;
-    EPersona  auxiliarPersona;
+    EPersona auxiliarPersona;
 
     if(limitePersonas > 0 && lista != NULL)
     {
@@ -135,8 +136,15 @@ int persona_ordenar(EPersona* lista, int orden)
         }while(flagSwap);
     }
 
+    for(i = 0; i < limitePersonas; i++) {
+        if(lista[i].estado == 1)
+            printf("\n%s - %s - %d",lista[i].nombre,lista[i].dni,lista[i].edad);
+    }
+    printf("\n\n");
+
     return retorno;
 }
+
 
 int personas_mostrar(EPersona* lista)
 {
@@ -149,131 +157,56 @@ int personas_mostrar(EPersona* lista)
         {
             if(lista[i].estado == 1)
             {
-               printf("\n %s - %d - %d - %d\n",lista[i].nombre,lista[i].edad,lista[i].estado,lista[i].dni);
+               printf("\n %s - %d - %d - %s\n",lista[i].nombre,lista[i].edad,lista[i].estado,lista[i].dni);
             }
         }
     }
     return retorno;
 }
 
-
-
-
-
-int getValidString(char requestMessage[],char errorMessage[], char errorMessageLenght[],char input[], int maxLenght,int attemps)
+int persona_grafico(EPersona* lista)
 {
+    int retorno = -1;
     int i;
-    int retorno=-1;
-    char buffer[1024];
 
-    for(i=0;i<attemps;i++)
-    {
-        if (!getStringLetras(requestMessage,buffer))
-        {
-            printf ("%s",errorMessage);
-            continue;
-        }
-        if(strlen(buffer) >= maxLenght)
-        {
-            printf ("%s",errorMessageLenght);
-            continue;
+    int less18 = 0;
+    int middle = 0;
+    int more35 = 0;
 
+    for(i = 0; i < limitePersonas; i++) {
+        if(lista[i].estado == 1) {
+            if(lista[i].edad <= 18)
+                less18 += 1;
+            else if(lista[i].edad >= 19 && lista[i].edad <= 35)
+                middle += 1;
+            else
+                more35 += 1;
         }
-        retorno=0;
-        strcpy(input,buffer);
-        break;
     }
+
+    int totalLines = 0;
+    if(less18 > middle) {
+        if(less18 > more35) {
+            totalLines = less18;
+        } else {
+            totalLines = more35;
+        }
+    } else {
+        if(middle > more35) {
+            totalLines = middle;
+        } else {
+            totalLines = more35;
+        }
+    }
+
+    printf("\n\n");
+    for(i = totalLines; i > 0; i--) {
+        printf(i <= less18 ? "  *  " : "     ");
+        printf(i <= middle ? "  *  " : "     ");
+        printf(i <= more35 ? "  *  " : "     ");
+        printf("\n");
+    }
+    printf("\n\n <18 19-35 >35 \n\n");
+
     return retorno;
-}
-
-int getValidInt(char requestMessage[],char errorMessage[], int* input,int lowLimit, int hiLimit,int attemps)
-{
-    char auxStr[256];
-    int auxInt, i, retorno = -1;
-
-    for(i=0;i<attemps;i++)
-    {
-        if (!getStringNumeros(requestMessage,auxStr))
-        {
-            printf ("%s",errorMessage);
-            break;
-            continue;
-
-        }
-        auxInt = atoi(auxStr);
-        if(auxInt < lowLimit || auxInt > hiLimit)
-        {
-            printf ("%s",errorMessage);
-            continue;
-
-        }
-        *input = auxInt;
-        retorno = 0;
-        break;
-
-    }
-    return retorno;
-
-}
-
-int getStringNumeros(char mensaje[],char input[])
-{
-    char aux[256];
-    getString(mensaje,aux);
-    if(esNumerico(aux))
-    {
-        strcpy(input,aux);
-        return 1;
-    }
-    return 0;
-}
-
-void getString(char mensaje[],char input[])
-{
-    printf("%s",mensaje);
-    fflush(stdin);
-    scanf ("%[^\n]s", input);
-}
-
-int getStringLetras(char mensaje[],char input[])
-{
-    char aux[256];
-    getString(mensaje,aux);
-    if(esSoloLetras(aux))
-    {
-        strcpy(input,aux);
-        return 1;
-    }
-    return 0;
-}
-
-int esSoloLetras(char str[])
-{
-   int i=0;
-   while(str[i] != '\0')
-   {
-       if((str[i] != ' ') && (str[i] < 'a' || str[i] > 'z') && (str[i] < 'A' || str[i] > 'Z'))
-           return 0;
-       i++;
-   }
-   return 1;
-}
-
-int esNumerico(char str[])
-{
-   int i=0;
-   while(str[i] != '\0')
-   {
-       if (i == 0 && str[i] == '-')
-       {
-           i++;
-           continue;
-
-       }
-       if(str[i] < '0' || str[i] > '9')
-           return 0;
-
-       i++;
-   }
-   return 1;
 }
